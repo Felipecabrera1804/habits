@@ -1,6 +1,6 @@
 // Service worker: caches the app so it works fully offline.
 // Bump VERSION whenever you change any file so phones pick up the update.
-const VERSION = 'habits-v1';
+const VERSION = 'habits-v2';
 const FILES = [
   './',
   'index.html',
@@ -23,16 +23,23 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Network first (so updates arrive when online), fall back to cache offline.
+// Network first (so updates arrive when online), fall back to cache.
+// Only successful responses replace the cache; if the site is down or
+// returns an error page (404, 500...), the cached app keeps being used.
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(
-    fetch(e.request)
-      .then(res => {
+  e.respondWith((async () => {
+    const cached = () => caches.match(e.request, { ignoreSearch: true });
+    try {
+      const res = await fetch(e.request);
+      if (res.ok) {
         const copy = res.clone();
         caches.open(VERSION).then(c => c.put(e.request, copy));
         return res;
-      })
-      .catch(() => caches.match(e.request, { ignoreSearch: true }))
-  );
+      }
+      return (await cached()) || res;
+    } catch {
+      return (await cached()) || Response.error();
+    }
+  })());
 });
