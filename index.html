@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14171c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Habits</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="top-row">
+      <h1 id="view-title">Today</h1>
+      <span id="overall-pct" class="pct">–</span>
+    </div>
+    <div class="bar" aria-label="Overall consistency">
+      <div id="overall-fill" class="bar-fill"></div>
+    </div>
+    <p id="overall-label" class="muted small">Overall consistency</p>
+  </header>
+
+  <main>
+    <p id="storage-warning" class="warning hidden">This browser is blocking storage, so changes will be lost when you close the app.</p>
+    <!-- TODAY -->
+    <section id="view-today" class="view active">
+      <p id="today-date" class="muted"></p>
+      <ul id="today-list" class="list"></ul>
+      <p id="today-empty" class="empty hidden">Nothing scheduled today. Add habits in the <b>Habits</b> tab.</p>
+    </section>
+
+    <!-- CALENDAR -->
+    <section id="view-calendar" class="view">
+      <div class="cal-nav">
+        <button id="cal-prev" class="icon-btn" aria-label="Previous month">‹</button>
+        <h2 id="cal-title"></h2>
+        <button id="cal-next" class="icon-btn" aria-label="Next month">›</button>
+      </div>
+      <div class="cal-grid cal-head">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+      <div id="cal-grid" class="cal-grid"></div>
+      <div id="cal-legend" class="legend"></div>
+      <p class="muted small">Tap a day to change which habits apply to it or to mark them done.
+        Filled dot = done, ring = pending, faded ring = missed.</p>
+    </section>
+
+    <!-- HABITS -->
+    <section id="view-habits" class="view">
+      <form id="add-form" class="card">
+        <input id="add-name" type="text" placeholder="New habit, e.g. Read 20 pages" maxlength="60" required autocomplete="off">
+        <div class="day-picker" id="add-days"></div>
+        <div class="row">
+          <div class="colors" id="add-colors"></div>
+          <button type="submit" class="btn primary">Add</button>
+        </div>
+      </form>
+      <ul id="habit-list" class="list"></ul>
+      <p id="habits-empty" class="empty hidden">No habits yet. Type one above.</p>
+
+      <div class="card data-card">
+        <h3>Your data</h3>
+        <p class="muted small">Everything is stored only on this device. Export a backup now and then.</p>
+        <div class="row gap">
+          <button id="export-btn" class="btn">Export backup</button>
+          <label class="btn">Import backup<input id="import-file" type="file" accept="application/json" hidden></label>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs">
+    <button data-view="today" class="tab active"><span class="tab-ico">✓</span>Today</button>
+    <button data-view="calendar" class="tab"><span class="tab-ico">▦</span>Calendar</button>
+    <button data-view="habits" class="tab"><span class="tab-ico">☰</span>Habits</button>
+  </nav>
+
+  <!-- Day detail sheet -->
+  <dialog id="day-dialog" class="sheet">
+    <h3 id="day-title"></h3>
+    <p class="muted small">Left switch: does this habit apply to this day? Right box: done.</p>
+    <ul id="day-list" class="list"></ul>
+    <button class="btn primary full" data-close>Done</button>
+  </dialog>
+
+  <!-- Edit habit sheet -->
+  <dialog id="edit-dialog" class="sheet">
+    <h3>Edit habit</h3>
+    <input id="edit-name" type="text" maxlength="60">
+    <div class="day-picker" id="edit-days"></div>
+    <div class="colors" id="edit-colors"></div>
+    <div class="row gap">
+      <button id="edit-delete" class="btn danger">Delete</button>
+      <span class="spacer"></span>
+      <button class="btn" data-close>Cancel</button>
+      <button id="edit-save" class="btn primary">Save</button>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
